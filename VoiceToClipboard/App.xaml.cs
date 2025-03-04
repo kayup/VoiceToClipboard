@@ -1,4 +1,6 @@
-﻿namespace VoiceToClipboard
+﻿using VoiceToClipboard.Views;
+
+namespace VoiceToClipboard
 {
     public partial class App : Application
     {
@@ -6,7 +8,7 @@
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            MainPage = new VoiceWindow();
         }
     }
 }

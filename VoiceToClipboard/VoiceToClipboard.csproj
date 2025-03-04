@@ -64,4 +64,10 @@
 		<PackageReference Include="Vosk" Version="0.3.38" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="Views\VoiceWindow.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
