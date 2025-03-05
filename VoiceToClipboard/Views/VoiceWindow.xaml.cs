@@ -90,8 +90,8 @@ public partial class VoiceWindow : ContentPage
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 RecognitionResultLabel.Text = result;
-                resultText = resultText + JsonDocument.Parse(result).RootElement.GetProperty("text").GetString();
-                Clipboard.SetTextAsync(resultText);
+                resultText += JsonDocument.Parse(result).RootElement.GetProperty("text").GetString() + "\n";
+                Clipboard.SetTextAsync(resultText.Replace(" ", ""));
             });
         }
     }
