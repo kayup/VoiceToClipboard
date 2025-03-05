@@ -4,6 +4,6 @@
              x:Class="VoiceToClipboard.Views.VoiceWindow"
              Title="VoiceWindow">
     <VerticalStackLayout Padding="20">
-        <Label x:Name="RecognizedTextLabel" Text="ここに文字起こし結果が表示されます" />
+        <Label x:Name="RecognitionResultLabel" Text="音声認識の結果" FontSize="18"/>
     </VerticalStackLayout>
 </ContentPage>

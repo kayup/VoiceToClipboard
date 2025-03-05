@@ -383,3 +383,7 @@ snapshots-diff/
 temp
 .packages
 /src/Templates/.tempTemplateOutput
+
+#My
+
+**/vosk-model-small-ja-0.22/*
