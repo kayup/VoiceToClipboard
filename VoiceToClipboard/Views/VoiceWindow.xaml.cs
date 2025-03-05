@@ -23,7 +23,8 @@ public partial class VoiceWindow : ContentPage
     public VoiceWindow()
 	{
 		InitializeComponent();
-	}
+        PasteButton.Clicked += OnPasteButtonClicked;
+    }
 
     protected override async void OnAppearing()
     {
@@ -47,7 +48,7 @@ public partial class VoiceWindow : ContentPage
         model = new Model(modelPath);
         recognizer = new VoskRecognizer(model, 16000.0f);
 
-        // ƒ}ƒCƒN“ü—ÍÝ’è
+        // ãƒžã‚¤ã‚¯ã®è¨­å®š
         waveIn = new WaveInEvent
         {
             WaveFormat = new WaveFormat(16000, 1)
@@ -55,13 +56,13 @@ public partial class VoiceWindow : ContentPage
         waveIn.DataAvailable += OnDataAvailable;
         waveIn.StartRecording();
 
-        // 30•ªŒã‚É’âŽ~
+        // 30åˆ†ã§çµ‚äº†
         cts = new CancellationTokenSource();
         try
         {
             await Task.Delay(TimeSpan.FromMinutes(30), cts.Token);
         }
-        catch (TaskCanceledException) { } // ƒ^ƒXƒNƒLƒƒƒ“ƒZƒ‹Žž‚Í‰½‚à‚µ‚È‚¢
+        catch (TaskCanceledException) { } // ã‚¿ã‚¹ã‚¯ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ™‚ã¯ä½•ã‚‚ã—ãªã„
 
         StopRecognition();
     }
@@ -90,9 +91,15 @@ public partial class VoiceWindow : ContentPage
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 RecognitionResultLabel.Text = result;
-                resultText += JsonDocument.Parse(result).RootElement.GetProperty("text").GetString() + "\n";
-                Clipboard.SetTextAsync(resultText.Replace(" ", ""));
+                var textTmp = JsonDocument.Parse(result).RootElement.GetProperty("text").GetString();
+                if (String.IsNullOrEmpty(textTmp)) return;
+                resultText += textTmp + "\n";
             });
         }
+    }
+
+    private void OnPasteButtonClicked(object? sender, EventArgs e)
+    {
+        Clipboard.SetTextAsync(resultText.Replace(" ", ""));  
     }
 }
