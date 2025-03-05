@@ -3,6 +3,8 @@ using NAudio.Wave;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Vosk;
@@ -16,6 +18,7 @@ public partial class VoiceWindow : ContentPage
     private Model? model;
     private bool isListening = false;
     private CancellationTokenSource? cts;
+    private static string resultText = string.Empty;
 
     public VoiceWindow()
 	{
@@ -87,6 +90,8 @@ public partial class VoiceWindow : ContentPage
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 RecognitionResultLabel.Text = result;
+                resultText = resultText + JsonDocument.Parse(result).RootElement.GetProperty("text").GetString();
+                Clipboard.SetTextAsync(resultText);
             });
         }
     }
