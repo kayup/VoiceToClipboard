@@ -11,11 +11,11 @@ namespace VoiceToClipboard.Views;
 
 public partial class VoiceWindow : ContentPage
 {
-    private WaveInEvent waveIn;
-    private VoskRecognizer recognizer;
-    private Model model;
+    private WaveInEvent? waveIn;
+    private VoskRecognizer? recognizer;
+    private Model? model;
     private bool isListening = false;
-    private CancellationTokenSource cts;
+    private CancellationTokenSource? cts;
 
     public VoiceWindow()
 	{
@@ -78,8 +78,9 @@ public partial class VoiceWindow : ContentPage
         cts?.Dispose();
     }
 
-    private void OnDataAvailable(object sender, WaveInEventArgs e)
+    private void OnDataAvailable(object? sender, WaveInEventArgs e)
     {
+        if (recognizer == null) return;
         if (recognizer.AcceptWaveform(e.Buffer, e.Buffer.Length))
         {
             var result = recognizer.Result();
