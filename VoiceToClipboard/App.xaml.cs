@@ -56,7 +56,9 @@ namespace VoiceToClipboard
             };
 
             var contextMenu = new ContextMenuStrip();
+            var openItem = new ToolStripMenuItem("起動", null, (s, e) => { });
             var exitItem = new ToolStripMenuItem("終了", null, (s, e) => ExitApplication());
+            contextMenu.Items.Add(openItem);
             contextMenu.Items.Add(exitItem);
 
             _notifyIcon.ContextMenuStrip = contextMenu;
