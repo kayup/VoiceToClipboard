@@ -57,15 +57,18 @@ public partial class VoiceWindow : ContentPage
         waveIn.DataAvailable += OnDataAvailable;// データが利用可能になったときのイベントハンドラを追加
         waveIn.StartRecording();// 録音を開始
 
-        // 30分で終了
-        cts = new CancellationTokenSource();
-        try
-        {
-            await Task.Delay(TimeSpan.FromMinutes(30), cts.Token);// 30分待機
-        }
-        catch (TaskCanceledException) { } // タスクキャンセル時は何もしない
+        //// 30分で終了
+        //cts = new CancellationTokenSource();
+        //try
+        //{
+        //    await Task.Delay(TimeSpan.FromMinutes(30), cts.Token);// 30分待機
+        //}
+        //catch (TaskCanceledException) { } // タスクキャンセル時は何もしない
 
-        StopRecognition();// 音声認識を停止
+        //StopRecognition();// 音声認識を停止
+
+        // 非同期メソッドにするためにダミーの非同期操作を追加
+        await Task.CompletedTask;
     }
 
 
