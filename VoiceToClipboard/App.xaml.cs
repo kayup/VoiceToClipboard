@@ -7,6 +7,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI;
 using Windows.Graphics;
 using System.Runtime.InteropServices;
+using WinRT.Interop;
 #endif
 
 namespace VoiceToClipboard
@@ -39,6 +40,26 @@ namespace VoiceToClipboard
                 });
             };
 
+            _mainWindow.HandlerChanged += (s, e) =>
+            {
+                var nativeWindow = _mainWindow?.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
+                if (nativeWindow != null)
+                {
+                    var hWnd = WindowNative.GetWindowHandle(nativeWindow);
+                    var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
+                    var appWindow = AppWindow.GetFromWindowId(windowId);
+                    if (appWindow != null)
+                    {
+                        appWindow.Closing += (sender, args) =>
+                        {
+                            args.Cancel = true; // 「×」ボタンで終了しない
+                            var hWnd = WindowNative.GetWindowHandle(nativeWindow);
+                            ShowWindow(hWnd, SW_HIDE); // ✅ これで非表示にする
+                        };
+                    }
+                }
+            };
+
             InitializeTrayIcon();
 #endif
 
@@ -58,8 +79,8 @@ namespace VoiceToClipboard
 
             if (nativeWindow is not null)
             {
-                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
-                ShowWindow(hWnd, SW_HIDE); // ✅ Win32 APIでウィンドウ非表示
+                var hWnd = WindowNative.GetWindowHandle(nativeWindow);
+                ShowWindow(hWnd, SW_HIDE);
             }
         }
 
@@ -69,8 +90,8 @@ namespace VoiceToClipboard
 
             if (nativeWindow is not null)
             {
-                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
-                ShowWindow(hWnd, SW_SHOW); // ✅ Win32 APIでウィンドウ再表示
+                var hWnd = WindowNative.GetWindowHandle(nativeWindow);
+                ShowWindow(hWnd, SW_SHOW);
             }
         }
 
