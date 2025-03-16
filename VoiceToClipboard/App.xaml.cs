@@ -3,41 +3,77 @@
 #if WINDOWS
 using System.Drawing;
 using System.Windows.Forms;
+using Microsoft.UI.Windowing;
+using Microsoft.UI;
+using Windows.Graphics;
+using System.Runtime.InteropServices;
 #endif
 
 namespace VoiceToClipboard
 {
     public partial class App : Microsoft.Maui.Controls.Application
     {
-        public App()
-        {
-            InitializeComponent();
-        }
+        private Window? _mainWindow;
+        private VoiceWindow? _voiceWindow;
 
 #if WINDOWS
         private NotifyIcon? _notifyIcon;
 #endif
 
+        public App()
+        {
+            InitializeComponent();
+        }
+
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            try
-            {
-                var window = new Window(new VoiceWindow());
+            _voiceWindow = new VoiceWindow();
+            _mainWindow = new Window(_voiceWindow);
 
 #if WINDOWS
-                InitializeTrayIcon();
+            _mainWindow.Created += (s, e) =>
+            {
+                _mainWindow?.Dispatcher.Dispatch(() =>
+                {
+                    HideWindow(_mainWindow);
+                });
+            };
+
+            InitializeTrayIcon();
 #endif
 
-                return window;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Unhandled exception: {ex}");
-                throw;
-            }
+            return _mainWindow!;
         }
 
 #if WINDOWS
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_HIDE = 0;
+        private const int SW_SHOW = 5;
+
+        private void HideWindow(Window window)
+        {
+            var nativeWindow = window.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
+
+            if (nativeWindow is not null)
+            {
+                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
+                ShowWindow(hWnd, SW_HIDE); // ✅ Win32 APIでウィンドウ非表示
+            }
+        }
+
+        private void ShowWindow(Window window)
+        {
+            var nativeWindow = window.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
+
+            if (nativeWindow is not null)
+            {
+                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
+                ShowWindow(hWnd, SW_SHOW); // ✅ Win32 APIでウィンドウ再表示
+            }
+        }
+
         private void InitializeTrayIcon()
         {
             var iconPath = Path.Combine(AppContext.BaseDirectory, "icon.ico");
@@ -50,24 +86,29 @@ namespace VoiceToClipboard
 
             _notifyIcon = new NotifyIcon
             {
-                Icon = new Icon(iconPath), // アイコンファイルをプロジェクトに追加
+                Icon = new Icon(iconPath),
                 Visible = true,
                 Text = "タスクトレイ常駐アプリ"
             };
 
             var contextMenu = new ContextMenuStrip();
-            var openItem = new ToolStripMenuItem("起動", null, (s, e) => { });
-            var exitItem = new ToolStripMenuItem("終了", null, (s, e) => ExitApplication());
+            var openItem = new ToolStripMenuItem("起動", null, (s, e) =>
+            {
+                if (_mainWindow != null)
+                {
+                    ShowWindow(_mainWindow);
+                }
+            });
+
+            var exitItem = new ToolStripMenuItem("終了", null, (s, e) =>
+            {
+                _notifyIcon?.Dispose();
+                Environment.Exit(0);
+            });
+
             contextMenu.Items.Add(openItem);
             contextMenu.Items.Add(exitItem);
-
             _notifyIcon.ContextMenuStrip = contextMenu;
-        }
-
-        private void ExitApplication()
-        {
-            _notifyIcon?.Dispose();
-            Environment.Exit(0);
         }
 #endif
     }
