@@ -32,6 +32,7 @@ namespace VoiceToClipboard
             _mainWindow = new Window(_voiceWindow);
 
 #if WINDOWS
+            // 起動時にウインドウを表示しないようにする
             _mainWindow.Created += (s, e) =>
             {
                 _mainWindow?.Dispatcher.Dispatch(() =>
@@ -42,19 +43,19 @@ namespace VoiceToClipboard
 
             _mainWindow.HandlerChanged += (s, e) =>
             {
-                var nativeWindow = _mainWindow?.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
+                var nativeWindow = _mainWindow?.Handler?.PlatformView as Microsoft.UI.Xaml.Window; // Windows上で動いている本物のウインドウ
                 if (nativeWindow != null)
                 {
-                    var hWnd = WindowNative.GetWindowHandle(nativeWindow);
+                    var hWnd = WindowNative.GetWindowHandle(nativeWindow); // そのウインドウのウインドウハンドルを取得
                     var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
                     var appWindow = AppWindow.GetFromWindowId(windowId);
                     if (appWindow != null)
                     {
                         appWindow.Closing += (sender, args) =>
                         {
-                            args.Cancel = true; // 「×」ボタンで終了しない
-                            var hWnd = WindowNative.GetWindowHandle(nativeWindow);
-                            ShowWindow(hWnd, SW_HIDE); // ✅ これで非表示にする
+                            args.Cancel = true; // 「×」ボタンで終了しない(終了処理をキャンセル)
+                            var hWnd = WindowNative.GetWindowHandle(nativeWindow); // そのウインドウのウインドウハンドルを取得
+                            ShowWindow(hWnd, SW_HIDE); // Win32 APIを使用してそのウインドウを非表示にする
                         };
                     }
                 }
@@ -90,8 +91,8 @@ namespace VoiceToClipboard
 
             if (nativeWindow is not null)
             {
-                var hWnd = WindowNative.GetWindowHandle(nativeWindow);
-                ShowWindow(hWnd, SW_SHOW);
+                var hWnd = WindowNative.GetWindowHandle(nativeWindow); // そのウインドウのウインドウハンドルを取得
+                ShowWindow(hWnd, SW_SHOW); // 非表示にしたウインドウをWin32 APIで再表示
             }
         }
 
@@ -123,8 +124,8 @@ namespace VoiceToClipboard
 
             var exitItem = new ToolStripMenuItem("終了", null, (s, e) =>
             {
-                _notifyIcon?.Dispose();
-                Environment.Exit(0);
+                _notifyIcon?.Dispose(); // タスクトレイアイコンを片づける
+                Environment.Exit(0); // アプリを強制終了(※0は正常終了)
             });
 
             contextMenu.Items.Add(openItem);
