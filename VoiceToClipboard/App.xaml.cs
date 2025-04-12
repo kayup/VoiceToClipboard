@@ -32,7 +32,7 @@ namespace VoiceToClipboard
             _mainWindow = new Window(_voiceWindow);
 
 #if WINDOWS
-            // 起動時にウインドウを表示しないようにする
+			// 起動時にウインドウを表示しないようにする
             _mainWindow.Created += (s, e) =>
             {
                 _mainWindow?.Dispatcher.Dispatch(() =>
@@ -56,6 +56,7 @@ namespace VoiceToClipboard
                             args.Cancel = true; // 「×」ボタンで終了しない(終了処理をキャンセル)
                             var hWnd = WindowNative.GetWindowHandle(nativeWindow); // そのウインドウのウインドウハンドルを取得
                             ShowWindow(hWnd, SW_HIDE); // Win32 APIを使用してそのウインドウを非表示にする
+                            _voiceWindow?.PauseRecognition(); // 非表示になったら認識停止
                         };
                     }
                 }
@@ -82,6 +83,7 @@ namespace VoiceToClipboard
             {
                 var hWnd = WindowNative.GetWindowHandle(nativeWindow);
                 ShowWindow(hWnd, SW_HIDE);
+                _voiceWindow?.PauseRecognition(); // 隠したら認識停止
             }
         }
 
@@ -93,6 +95,7 @@ namespace VoiceToClipboard
             {
                 var hWnd = WindowNative.GetWindowHandle(nativeWindow); // そのウインドウのウインドウハンドルを取得
                 ShowWindow(hWnd, SW_SHOW); // 非表示にしたウインドウをWin32 APIで再表示
+                _voiceWindow?.ResumeRecognition(); // 表示したら認識再開
             }
         }
 
