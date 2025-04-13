@@ -2,12 +2,13 @@
 
 #if WINDOWS
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.UI.Windowing;
 using Microsoft.UI;
 using Windows.Graphics;
-using System.Runtime.InteropServices;
 using WinRT.Interop;
+using VoiceToClipboard.Services;
 #endif
 
 namespace VoiceToClipboard
@@ -19,6 +20,7 @@ namespace VoiceToClipboard
 
 #if WINDOWS
         private NotifyIcon? _notifyIcon;
+        private HotkeyWindow? _hotkeyWindow;
 #endif
 
         public App()
@@ -32,7 +34,7 @@ namespace VoiceToClipboard
             _mainWindow = new Window(_voiceWindow);
 
 #if WINDOWS
-			// 起動時にウインドウを表示しないようにする
+            // 起動時にウインドウを表示しないようにする
             _mainWindow.Created += (s, e) =>
             {
                 _mainWindow?.Dispatcher.Dispatch(() =>
@@ -54,7 +56,6 @@ namespace VoiceToClipboard
                         appWindow.Closing += (sender, args) =>
                         {
                             args.Cancel = true; // 「×」ボタンで終了しない(終了処理をキャンセル)
-                            var hWnd = WindowNative.GetWindowHandle(nativeWindow); // そのウインドウのウインドウハンドルを取得
                             ShowWindow(hWnd, SW_HIDE); // Win32 APIを使用してそのウインドウを非表示にする
                             _voiceWindow?.PauseRecognition(); // 非表示になったら認識停止
                         };
@@ -63,6 +64,16 @@ namespace VoiceToClipboard
             };
 
             InitializeTrayIcon();
+
+            // グローバルホットキーの初期化
+            _hotkeyWindow = new HotkeyWindow(() =>
+            {
+                if (_mainWindow != null)
+                {
+                    ShowWindow(_mainWindow);
+                }
+            });
+
 #endif
 
             return _mainWindow!;
