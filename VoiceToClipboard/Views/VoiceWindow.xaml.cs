@@ -113,16 +113,19 @@ if (cts != null)
         if (recognizer.AcceptWaveform(e.Buffer, e.Buffer.Length))
         {
             var result = recognizer.Result();
+            var textTmp = JsonDocument.Parse(result).RootElement.GetProperty("text").GetString();
+            if (string.IsNullOrEmpty(textTmp)) return;
+
+            resultText += textTmp + "\n"; // 全体保持用（クリップボード用にも使う）
+
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                RecognitionResultLabel.Text = result;
-
-                var textTmp = JsonDocument.Parse(result).RootElement.GetProperty("text").GetString();
-                if (String.IsNullOrEmpty(textTmp)) return;
-                resultText += textTmp + "\n";
+                RecognitionResultLabel.Text += textTmp + "\n";
             });
         }
     }
+
+
 
     // 結果をクリップボードにコピー
     private async void OnPasteButtonClicked(object? sender, EventArgs e)

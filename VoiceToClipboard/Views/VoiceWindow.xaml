@@ -4,7 +4,8 @@
              x:Class="VoiceToClipboard.Views.VoiceWindow"
              Title="VoiceWindow">
     <VerticalStackLayout Padding="20">
-        <Label x:Name="RecognitionResultLabel" Text="音声認識の結果" FontSize="18"/>
+        <Label x:Name="TitleLabel" Text="音声認識の結果" FontSize="24"/>
+        <Label x:Name="RecognitionResultLabel" FontSize="18"/>
         <Button x:Name="PasteButton"
         Text="クリップボードに貼り付け"
         FontSize="18"
