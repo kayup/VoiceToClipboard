@@ -125,8 +125,21 @@ if (cts != null)
     }
 
     // 結果をクリップボードにコピー
-    private void OnPasteButtonClicked(object? sender, EventArgs e)
+    private async void OnPasteButtonClicked(object? sender, EventArgs e)
     {
-        Clipboard.SetTextAsync(resultText.Replace(" ", ""));
+        // アニメーション（押された感じ）
+        await PasteButton.ScaleTo(0.96, 80, Easing.CubicInOut);  // 少し小さく
+        await PasteButton.ScaleTo(1.0, 80, Easing.CubicInOut);   // 元に戻す
+
+        // クリップボードへコピー
+        await Clipboard.SetTextAsync(resultText.Replace(" ", ""));
+
+        // 一時的にテキスト変更など（任意）
+        string originalText = PasteButton.Text;
+        PasteButton.Text = "コピーしました！";
+
+        await Task.Delay(1500);
+        PasteButton.Text = originalText;
     }
+
 }

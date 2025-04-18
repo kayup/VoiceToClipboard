@@ -5,6 +5,16 @@
              Title="VoiceWindow">
     <VerticalStackLayout Padding="20">
         <Label x:Name="RecognitionResultLabel" Text="音声認識の結果" FontSize="18"/>
-        <Button x:Name="PasteButton" Text="クリップボードに貼り付け" FontSize="18"/>
+        <Button x:Name="PasteButton"
+        Text="クリップボードに貼り付け"
+        FontSize="18"
+        TextColor="White"
+        BackgroundColor="#1976D2"
+        CornerRadius="8"
+        Padding="12">
+            <Button.Shadow>
+                <Shadow Brush="Black" Offset="3,3" Radius="6" Opacity="0.4" />
+            </Button.Shadow>
+        </Button>
     </VerticalStackLayout>
 </ContentPage>
