@@ -112,7 +112,7 @@ namespace VoiceToClipboard
 
         private void InitializeTrayIcon()
         {
-            var iconPath = Path.Combine(AppContext.BaseDirectory, "icon.ico");
+            var iconPath = Path.Combine(AppContext.BaseDirectory, "Resources", "icon.ico");
 
             if (!File.Exists(iconPath))
             {
