@@ -57,7 +57,7 @@ public partial class VoiceWindow : ContentPage
         isListening = true;
 
 		// 音声認識モデルのパスを設定
-        string modelPath = Path.Combine(AppContext.BaseDirectory, "vosk-model-small-ja-0.22");
+        string modelPath = Path.Combine(AppContext.BaseDirectory, "VoskModels", "vosk-model-small-ja-0.22");
         model = new Model(modelPath);
         recognizer = new VoskRecognizer(model, 16000.0f);
 

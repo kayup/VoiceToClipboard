@@ -69,13 +69,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="icon.ico" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="Views\VoiceWindow.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Resources\icon.ico">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="VoskModels\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>
