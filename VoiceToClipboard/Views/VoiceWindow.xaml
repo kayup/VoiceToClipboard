@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VoiceToClipboard.Views.VoiceWindow"
              Title="VoiceWindow">
-    <ScrollView>
+    <ScrollView Orientation="Both">
         <VerticalStackLayout Padding="20">
             <Label x:Name="TitleLabel" Text="音声認識の結果" FontSize="24"/>
             <Label x:Name="RecognitionResultLabel" FontSize="18"/>
