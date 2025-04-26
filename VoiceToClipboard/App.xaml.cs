@@ -124,7 +124,7 @@ namespace VoiceToClipboard
             {
                 Icon = new Icon(iconPath),
                 Visible = true,
-                Text = "タスクトレイ常駐アプリ"
+                Text = "VoiceToClipboard"
             };
 
             var contextMenu = new ContextMenuStrip();
